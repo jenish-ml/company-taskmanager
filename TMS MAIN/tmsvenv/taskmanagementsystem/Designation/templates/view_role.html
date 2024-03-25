@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="panel-body search" style="display: flex;justify-content: flex-end; ">
+            <form action="" method="GET">
+                <input type="text" name="search" placeholder="search">
+                <button type="submit" href="/">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div><br>
+        <div class="panel-body widget-shadow">
+            <h4>Designation View:</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Role</th>
+                      <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in a%}
+                    <tr>
+                      <td>{{i.role}}</td>
+                      <td><a href="/edit_role/{{i.id}}">Edit</a>/<a href="/delete_role/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.role }}?')">Delete</a></td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%endblock%}

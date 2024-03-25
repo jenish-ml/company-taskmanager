@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="page-wrapper">
+      <div class="container">
+        <h1>Task Analysis</h1>
+        <div class="row">
+          <div class="col-md-6">
+            <canvas id="taskStatusChart" width="400" height="400"></canvas>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          var ctx = document.getElementById("taskStatusChart").getContext("2d");
+          var data = {
+            labels: ["To-Do", "In Progress", "Completed"],
+            datasets: [
+              {
+                data: [ '{{ to_do_count }}' , '{{ in_progress_count }}' , '{{ completed_count }}'],
+                backgroundColor: ["#FF5733", "#FFC300", "#36A2EB"],
+                borderWidth: 0,
+              },
+            ],
+          };
+          var taskStatusChart = new Chart(ctx, {
+            type: "pie",
+            data: data,
+          });
+        });
+      </script>
+    </body>
+</html>
+{% endblock %}

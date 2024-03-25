@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="row">
+            <div class="card-columns">
+                {% for i in b %}
+                <div class="card custom-card">
+                    <div class="card-header-one">
+                        <h3 class="card-title"><strong>SubTask :</strong>&nbsp;&nbsp;  {{ i.title }}</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Description:</strong><br> {{ i.description }}</li>
+                        <li class="list-group-item"><strong>Assigned by:</strong> {{ i.assigned_staff }}</li>
+                        <li class="list-group-item"><strong>Assigned to:</strong> {{ i.staff }}</li>
+                        <li class="list-group-item"><strong>Start Date:</strong> {{ i.start_date }}</li>
+                        <li class="list-group-item"><strong>Due Date:</strong> {{ i.due_date }}</li>
+                        <li class="list-group-item"><strong>Priority:</strong> {{ i.priority }}</li>
+                        <li class="list-group-item"><strong>Category:</strong> {{ i.category }}</li>
+                        <li class="list-group-item"><strong>Status:</strong> {{ i.status }}</li>
+                        <li class="list-group-item"><strong>Related Files:</strong>
+                             {% for file in i.file.all %}
+                            <li class="list-group-item">
+                                <a href="{{ file.file.url }}">{{ file.file }}</a>
+                            </li>
+                            {% endfor %}
+                            </li>
+                        <ul class="list-group list-group-flush">
+                            
+                        </ul><br>
+                        <li class="list-group-item">
+                            <a class="btn btn-info" href="/add_subtask_message/{{i.id}}">Messages</a>
+                            <a class="btn btn-primary" href="/edit_subtask/{{i.id}}">Edit</a>
+                            <a class="btn btn-danger" href="/delete_subtask/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.title }}?')">Delete</a>
+                        </li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card custom-card" style="height: 400px; overflow-y: auto;">
+                <div class="card-header">
+                    <h3 >Messages</h3>
+                </div>
+                <div class="card-body" style="margin-left: 10px;">
+                        
+                        {% for i in d %}
+                        <p> # {{ forloop.revcounter }}:</p>
+                        <h6>added by: {{i.userid}} on {{i.current_date}}</h6>  
+                        <p>Message:<strong>{{i.message}}</strong></p>
+                        {% for file in i.file.all %}
+                        <p>Related Files : 
+                            <a href="{{ file.file.url }}">{{ file.file }}</a>
+                        </p>
+                        {% endfor %}
+                        <hr style="border-color: #343a40;">
+                        {% empty %}
+                            <p>No Messages in Task</p>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .custom-card {
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        background-color: #f8f9fa;
+    }
+    .custom-card .card-header {
+        background-color: #171718;
+        color: white;
+        padding: 20px;
+    }
+    .related-files-card {
+        background-color: #fff;
+        border: 1px solid #ccc;
+    }
+    .card-header-one{
+        background-color: #1f1e1e;
+        color: white;
+        padding: 5px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="panel-body search" style="display: flex;justify-content: flex-end; ">
+            <form action="" method="GET">
+                <input type="text" name="search" placeholder="search">
+                <button type="submit" href="/">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div><br>
+        <div class="panel-body widget-shadow">
+            <h4>Team View:</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Team Members</th>
+                      <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in a%}
+                    <tr>
+                      <td>{{i.team_name}}</td>
+                      <td><ul>
+                        {% for member in i.team_members.all %}
+                            <li>{{ member.name }}</li>
+                        {% endfor %}
+                    </ul></td>
+                    <td><a href="/project_teammembers_edit/{{i.id}}">Edit</a>/<a href="/project_teammembers_delete/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.team_name }}?')">Delete</a></td>
+                </tr>
+                    {%endfor%}
+                    
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+<div id="page-wrapper">
+    <div class="widget2">
+        <div class="form-body">
+            <h2 class="title1">Add SubTask</h2>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>
+                    <label for="id_title">Title:</label>
+                    <input type="text" name="title" class="form-control2" maxlength="50" required="" id="id_title">
+                </p>
+
+                <p>
+                    <label for="id_description">Description:</label>
+                    <textarea name="description" cols="40" rows="10" class="form-control2" required="" id="id_description"></textarea>
+                </p>
+
+                <p>
+                    <label for="id_start_date">Start date:</label>
+                    <input type="date" name="start_date" class="form-control2" required="" id="id_start_date">
+                </p>
+
+                <p>
+                    <label for="id_due_date">Due date:</label>
+                    <input type="date" name="due_date" class="form-control2" required="" id="id_due_date">
+                </p>
+
+                <p>
+                    <label for="id_priority">Priority:</label>
+                    <select name="priority" class="form-control2" maxlength="100" id="id_priority">
+                        <option value="">Select</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="id_category">Category:</label>
+                    <select name="category" class="form-control2" type="select" required="" id="id_category">
+                        <option value="">Select</option>
+                        <option value="task">Task</option>
+                        <option value="bug">Bug</option>
+                        <option value="defect">Defect</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="id_staff">Assign Staff:</label>
+                    <select name="staff" id="id_staff" class="form-control2" required="">
+                        <option value="">Select</option>
+                        {% for member in members %}
+                            <option value="{{ member }}">{{ member }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p>
+                    <label for="id_file">File:</label>
+                    <input type="file" name="file" multiple="" id="id_file">
+                </p>
+                <input type="submit" class="form-button" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function(){
+        $("#id_staff").select2()
+        $("#id_start_date, #id_due_date").change(function(){
+            validateDateRange();
+        });
+
+        function validateDateRange() {
+            var taskStartDate = new Date("{{ task.start_date }}");
+            var taskDueDate = new Date("{{ task.due_date }}");
+            
+            var enteredStartDate = new Date($("#id_start_date").val());
+            var enteredDueDate = new Date($("#id_due_date").val());
+
+            taskStartDate.setHours(0, 0, 0, 0);
+            taskDueDate.setHours(0, 0, 0, 0);
+            enteredStartDate.setHours(0, 0, 0, 0);
+            enteredDueDate.setHours(0, 0, 0, 0);
+
+            if (enteredStartDate < taskStartDate || enteredStartDate > taskDueDate) {
+                alert("Start date must be between task start date and due date");
+                $("#id_start_date").val("");
+            }
+
+            if (enteredDueDate < taskStartDate || enteredDueDate > taskDueDate) {
+                alert("Due date must be between task start date and due date");
+                $("#id_due_date").val("");
+            }
+
+            if (enteredDueDate < enteredStartDate) {
+                alert("Due date must be greater than or equal to the start date");
+                $("#id_due_date").val("");
+            }
+        }
+
+        $("#subtaskForm").submit(function() {
+            validateDateRange();
+        });
+    });
+</script>
+
+<style>
+    .form-body .form-button {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: #fff;
+        background: #F2B33F;
+        width: 40%;
+        padding: 0.6em 1em;
+        font-size: 1em;
+        margin: 0.5em auto 0;
+        display: block;
+        transition: 0.5s all;
+        -webkit-transition: 0.5s all;
+        -moz-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+        -o-transition: 0.5s all;
+    }
+</style>
+{% endblock %}

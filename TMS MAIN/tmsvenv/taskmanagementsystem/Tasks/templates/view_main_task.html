@@ -1,0 +1,222 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card-columns">
+                    {% for i in b %}
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h3 class="card-title" style="display: flex; justify-content: space-between;">
+                                <span>
+                                    <strong>Task Title:</strong>&nbsp;&nbsp;{{ i.title }}
+                                </span>
+                                <span>
+                                    <a href="/add_subtask/{{a.id}}" class="btn btn-primary btn-sm">Add SubTask</a>
+                                </span>
+                            </h3>
+                        </div>
+                        <ul class="list-group list-group-flush" style="margin-left: 10px;">
+                            <li class="list-group-item"><strong>Created By:</strong> {{ i.created_by }}</li>
+                            <li class="list-group-item"><strong>Created In:</strong> {{ i.current_date }}</li>
+                            <li class="list-group-item"><strong>Description:</strong><br> {{ i.description }}</li>
+                            <li class="list-group-item"><strong>Assigned by:</strong> {{ i.assigned_staff }}</li>
+                            <li class="list-group-item"><strong>Assigned to:</strong> {{ i.staff }}</li>
+                            <li class="list-group-item"><strong>Start Date:</strong> {{ i.start_date }}</li>
+                            <li class="list-group-item"><strong>Due Date:</strong> {{ i.due_date }}</li>
+                            <li class="list-group-item"><strong>Priority:</strong> {{ i.priority }}</li>
+                            <li class="list-group-item"><strong>Category:</strong> {{ i.category }}</li>
+                            <li class="list-group-item"><strong>Status:</strong> {{ i.status }}</li>
+                            <li class="list-group-item"><strong>Related Files:</strong>
+                                 {% for file in i.file.all %}
+                                <li class="list-group-item">
+                                    <a href="{{ file.file.url }}">{{ file.file }}</a>
+                                </li>
+                                {% endfor %}
+                            </li><br>
+                            <li class="list-group-item">
+                                <a class="btn btn-info" href="/apply_status/{{i.id}}">Status</a>
+                                <a class="btn btn-primary" href="/add_messages/{{i.id}}">Messages</a>
+                                <a class="btn btn-success" href="/edit_task/{{i.id}}">Edit</a>
+                                <a class="btn btn-danger" href="/delete_task/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.title }}?')">Delete</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Subtasks</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Start Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if request.session.ut != 3 %}
+                            {% for i in f %}
+                                <tr>
+                                    <td><a href="/view_subtasks/{{i.id}}">{{ i.title }}</a></td>
+                                    <td>{{ i.start_date }}</td>
+                                    <td>{{ i.due_date }}</td>
+                                    <td>{{ i.status }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">This task has no subordinate tasks.</td>
+                                </tr>
+                            {% endfor %}
+                            {% elif request.session.ut == 3 %}
+                            {% for i in h %}
+                                <tr>
+                                    <td><a href="/view_subtasks/{{i.id}}">{{ i.title }}</a></td>
+                                    <td>{{ i.start_date }}</td>
+                                    <td>{{ i.due_date }}</td>
+                                    <td>{{ i.status }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">This task has no subordinate tasks.</td>
+                                </tr>
+                            {% endfor %}
+                            {%endif%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-7">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h3 class="card-title">Status View</h3>
+                </div>
+                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                    <div style="padding: 0px 10px 10px 10px;">
+                    <ul>
+                        {% for i in task_history %}
+                            <p><li>
+                                <p>
+                                    # {{ forloop.counter }}:
+                                </p>
+                                <p>
+                                    {{ i.modified_by }} updated the task on {{ i.modified_at }}
+                                </p>
+                                
+                                {% if i.old_title != i.new_title %}
+                                <p>The title was changed from "{{ i.old_title }}" to <strong>"{{ i.new_title }}"</strong></p>
+                                {% endif %}
+                    
+                                {% if i.old_description != i.new_description %}
+                                <p>The description was changed  to "{{ i.new_description }}"</p>
+                                {% endif %}
+                    
+                                {% if i.old_start_date != i.new_start_date %}
+                                <p>The start date was changed from "{{ i.old_start_date }}" to <strong>"{{ i.new_start_date }}"</strong></p>
+                                {% endif %}
+                    
+                                {% if i.old_due_date != i.new_due_date %}
+                                <p>The due date was changed from "{{ i.old_due_date }}" to <strong>"{{ i.new_due_date }}"</strong></p>
+                                {% endif %}
+
+                                {% if i.old_priority != i.new_priority %}
+                                <p>The priority was changed from "{{ i.old_priority }}" to <strong>"{{ i.new_priority }}"</strong></p>
+                                {% endif %}
+
+                                {% if i.old_category != i.new_category %}
+                                <p>The category was changed from "{{ i.old_category }}" to <strong>"{{ i.new_category }}"</strong></p>
+                                {% endif %}
+
+                                {% if i.old_status != i.new_status %}
+                                <p>The status was changed from "{{ i.old_status }}" to <strong>"{{ i.new_status }}"</strong></p>
+                                {% endif %}
+                                
+                                {% if i.old_staff != i.new_staff %}
+                                <p>The staff was changed from "{{ i.old_staff }}" to <strong>"{{ i.new_staff }}"</strong></p>
+                                {% endif %}
+                            
+                                {% if i.subtask_add == "1" %}
+                                <p style="margin-left: 10px;"><strong>{{i.modified_by}}</strong> added Task <strong>{{i.subtask}}</strong></p>
+                                {% endif %}
+                                
+                                {% if i.subtask_delete == "1" %}
+                                <p style="margin-left: 10px;"><strong>{{i.modified_by}}</strong> deleted Task <strong>{{i.subtask}}</strong></p>
+                                {% endif %}
+                                
+                                {% if i.file_status == "1" %}
+                                <p style="margin-left: 10px;">Some Files are added</p>
+                                {% endif %}
+                                
+                                {% if i.file_remove_status == "1" %}
+                                <p style="margin-left: 10px;">Some files removed</p>
+                                {% endif %}
+
+                                {% if i.message == "1" %}
+                                <p style="margin-left: 10px;"><strong>{{i.modified_by}}</strong> added Message </p>
+                                {% endif %}
+
+
+                            </p></li>
+                            </li></p>
+                            <hr style="border-color: #343a40;">
+                            {% empty %}
+                            <p>No modifications have been made to the task.</p>
+                        {% endfor %}
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card custom-card" >
+                <div class="card-header" >
+                    <h3 >Messages</h3>
+                </div>
+                <div class="card-body" style="height: 400px; overflow-y: auto;">
+                    <div style="padding: 10px 10px 10px 10px;">
+                        {% for i in d %}
+                        <p> # {{ forloop.counter }}:</p>
+                        <h6>added by: {{i.userid}}</h6>  
+                        <p>Message:<strong>{{i.message}}</strong></p>
+                        {% for file in i.file.all %}
+                            <li class="list-group-item">
+                                <a href="{{ file.file.url }}">{{ file.file }}</a>
+                            </li>
+                        {% endfor %}
+                        <hr style="border-color: #343a40;">
+                        {% empty %}
+                            <p><strong>There are no messages associated with the task.</strong></p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        background-color: #f8f9fa;
+    }
+    .custom-card .card-header {
+        background-color: #343a40;
+        color: white;
+        padding: 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+</style>
+{% endblock %}

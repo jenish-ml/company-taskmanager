@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div id="page-wrapper">
+    <div style="margin-left: 200px;">
+        <button><a href="/view_team_members/{{project.id}}">View Team Members</a></button>
+        <button><a href="/add_task/{{project.id}}">Add Task</a></button>
+        <button><a href="/view_project_task/{{project.id}}">View Tasks</a></button>
+        <button><a href="/view_project_task_performance/{{project.id}}">View Task Chart</a></button>
+        <button><a href="/view_task_statuses/{{project.id}}">View Status</a></button>
+        <button><a href="/view_report/{{project.id}}">View Report</a></button>
+        <button><a href="/view_project">View Projects</a></button>
+    </div>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+
+    <h2 class="title1">Report for </h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Start Date</th>
+                <th>Due Date</th>
+                <th>Staff</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in a %}
+            <tr>
+                <td>{{ i.project }}</td>
+                <td>{{ i.title }}</td>
+                <td>{{ i.start_date|date:"D, d M Y" }}</td>
+                <td>{{ i.due_date|date:"D, d M Y" }}</td>
+                <td>{{ i.staff }}</td>
+                {%if i.statuses == None %}
+                <th>Not Updated</th>
+                {% else %}
+                <td>{{ i.statuses }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

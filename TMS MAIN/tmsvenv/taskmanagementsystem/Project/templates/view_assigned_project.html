@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div id="page-wrapper">
+    <div class="main-page">
+        <body>
+            <h1>Project Changes</h1>
+            {% for i in project_history %}
+            <p>
+                {{ i.modified_by }} updated the project on {{ i.modified_date }}
+            </p>
+            
+            {% if i.old_title != i.new_title %}
+            <p>The title was changed from "{{ i.old_title }}" to "{{ i.new_title }}"</p>
+            {% endif %}
+
+            {% if i.old_description != i.new_description %}
+            <p>The description was changed  to "{{ i.new_description }}"</p>
+            {% endif %}
+
+            {% if i.old_start_date != i.new_start_date %}
+            <p>The start date was changed from "{{ i.old_start_date }}" to "{{ i.new_start_date }}"</p>
+            {% endif %}
+
+            {% if i.old_due_date != i.new_due_date %}
+            <p>The due date was changed from "{{ i.old_due_date }}" to "{{ i.new_due_date }}"</p>
+            {% endif %}
+            {% endfor %}
+        </body>
+    </div>
+</div>
+{% endblock %}

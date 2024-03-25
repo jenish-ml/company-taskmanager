@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div id="page-wrapper">
+    <div style="margin-left: 200px;">
+        <button><a href="/view_team_members/{{b.id}}">View Team Members</a></button>
+        <button><a href="/add_task/{{b.id}}">Add Task</a></button>
+        <button><a href="/view_project_task/{{b.id}}">View Tasks</a></button>
+        <button><a href="/view_project_task_performance/{{b.id}}">View Task Chart</a></button>
+        <button><a href="/view_task_statuses/{{b.id}}">View Status</a></button>
+        <button><a href="/view_report/{{b.id}}">View Report</a></button>
+        <button><a href="/view_project">View Projects</a></button>
+    </div><br><br>
+    <div class="main-page">
+        <div>
+            <div class="panel-body search" style="display: flex; justify-content: space-between;">
+                <div class="filter-box">
+                    <form action="" method="GET" id="priority-form">
+                        <label for="priority">Priority:</label>
+                        <select name="priority" id="priority" style="height: 30px;">
+                            <option value="">All</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button type="submit">
+                            <i class="fa fa-filter"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="filter-box">
+                    <form action="" method="GET" id="status-form">
+                        <label for="filter">Filter by:</label>
+                        <select name="filter" id="filter" style="height: 30px;">
+                            <option value="">All</option>
+                            <option value="to-do">To-Do</option>
+                            <option value="in progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <button type="submit">
+                            <i class="fa fa-filter"></i>
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    <form action="" method="GET" style="margin-top: 7px;">
+                        <input type="text" name="search" placeholder="Search">
+                        <button type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div><br><br>
+        
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Task Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Category</th>
+                        <th>Staff</th>
+                        <th>Related Files</th>
+                        {% if request.session.ut != 1%}
+                        <th>Status</th>
+                        {%endif%}
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% if request.session.ut == 1 %}
+                    {% for i in a %}
+                    <tr>
+                        <td>{{ i.project }}</td>
+                        <td>{{i.id}}.{{ i.title }}</td>
+                        <td>{{ i.description }}</td>
+                        <td>{{ i.start_date }}</td>
+                        <td>{{ i.due_date }}</td>
+                        <td>{{ i.priority }}</td>
+                        <td>{{ i.category }}</td>
+                        <td>{{ i.staff }}</td>
+                        <td>
+                            <ul>
+                                {% for file in i.file.all %}
+                                    <li><a href="{{ file.file.url }}">{{ file.file }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="/edit_task/{{i.id}}">Edit</a>
+                            <a href="/delete_task/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.title }}?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    {% for i in e %}
+                    <tr>
+                        <td>{{ i.project }}</td>
+                        <td>{{i.id}}. {{ i.title }}</td>
+                        <td>{{ i.description }}</td>
+                        <td>{{ i.start_date }}</td>
+                        <td>{{ i.due_date }}</td>
+                        <td>{{ i.priority }}</td>
+                        <td>{{ i.category }}</td>
+                        <td>{{ i.staff }}</td>
+                        <td>
+                            <ul>
+                                {% for file in i.file.all %}
+                                    <li><a href="{{ file.file.url }}">{{ file.file }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td><a href="add_status/{{i.id}}">Status</a></td>
+                        <td>
+                            <a href="/edit_task/{{i.id}}">Edit</a>
+                            <a href="/delete_task/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.title }}?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {%endif%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

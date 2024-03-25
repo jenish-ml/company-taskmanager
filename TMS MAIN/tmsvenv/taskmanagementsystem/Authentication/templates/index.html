@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+{% if a %}
+<script>
+    alert("Login Credentials Invalid")
+</script>
+{%endif%}
+
+{% if user.is_authenticated %}
+    <strong>Welcome</strong>
+{% else %}
+<strong>
+    please login as admin,,,
+</strong>
+{% endif %}
+    
+
+{%endblock%}

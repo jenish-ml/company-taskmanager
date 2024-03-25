@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<div id="page-wrapper">
+    <div class="main-page">
+        <div style="margin-left: 200px;">
+          <button><a href="/view_team_members/{{a.id}}">View Team Members</a></button>
+          <button><a href="/add_task/{{a.id}}">Add Task</a></button>
+          <button><a href="/view_project_task/{{a.id}}">View Tasks</a></button>
+          <button><a href="/view_project_task_performance/{{a.id}}">View Task Chart</a></button>
+          <button><a href="/view_task_statuses/{{a.id}}">View Status</a></button>
+          <button><a href="/view_report/{{a.id}}">View Report</a></button>
+          <button><a href="/view_project">View Projects</a></button>
+        </div><br><br>
+        <div class="container">
+            <h1>Task Analysis</h1>
+            <div class="row">
+              <div class="col-md-6">
+                <canvas id="taskPerformanceChart" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var ctx = document.getElementById("taskPerformanceChart").getContext("2d");
+      var data = {
+        labels: ["To-Do", "In Progress", "Completed"],
+        datasets: [
+          {
+            data: ['{{ to_do_count }}', '{{ in_progress_count }}', '{{ completed_count }}'],
+            backgroundColor: ["#FF5733", "#FFC300", "#36A2EB"],
+            borderWidth: 0,
+          },
+        ],
+      };
+      var taskPerformanceChart = new Chart(ctx, {
+        type: "pie",
+        data: data,
+      });
+    });
+</script>
+{% endblock %}

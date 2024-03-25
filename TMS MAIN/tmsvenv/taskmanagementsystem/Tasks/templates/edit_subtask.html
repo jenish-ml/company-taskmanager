@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div id="page-wrapper">
+    <div class="widget2">
+        <div class="form-body">
+            <h2 class="title1">Edit SubTask</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <h3>Related Files:</h3>
+                <ul>
+                {% for file in related_files %}
+                <li>
+                <a href="{{ file.file.url }}" target="_blank">{{ file.file.name }}</a>
+                <input type="checkbox" name="remove_files" value="{{ file.id }}">
+                </li>
+                {% endfor %}
+                </ul>
+                <span>*selected files will be removed</span>
+                <p>
+                    <label for="id_staff">Assign Staff:</label>
+                    <select name="staff" id="id_staff" class="form-control2" required="">
+                        <option value="">Select</option>
+                        {% for member in members %}
+                            <option value="{{ member }}" {% if member == current_staff %}selected{% endif %}>{{ member }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <input type="submit" class="form-button" value="Update">
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#id_start_date, #id_due_date").change(function(){
+            validateDateRange();
+        });
+
+        function validateDateRange() {
+            var taskStartDate = new Date("{{ task.start_date }}");
+            var taskDueDate = new Date("{{ task.due_date }}");
+            
+            var enteredStartDate = new Date($("#id_start_date").val());
+            var enteredDueDate = new Date($("#id_due_date").val());
+
+            taskStartDate.setHours(0, 0, 0, 0);
+            taskDueDate.setHours(0, 0, 0, 0);
+            enteredStartDate.setHours(0, 0, 0, 0);
+            enteredDueDate.setHours(0, 0, 0, 0);
+
+            if (enteredStartDate < taskStartDate || enteredStartDate > taskDueDate) {
+                alert("Start date must be between task start date and due date");
+                $("#id_start_date").val("{{ task.start_date }}");
+            }
+
+            if (enteredDueDate < taskStartDate || enteredDueDate > taskDueDate) {
+                alert("Due date must be between task start date and due date");
+                $("#id_due_date").val("{{ task.due_date }}");
+            }
+
+            if (enteredDueDate < enteredStartDate) {
+                alert("Due date must be greater than or equal to the start date");
+                $("#id_due_date").val("{{ task.due_date }}");
+            }
+        }
+
+        $("#editSubtaskForm").submit(function() {
+            validateDateRange();
+        });
+    });
+</script>
+<style>
+    .form-body .form-button {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: #fff;
+        background: #F2B33F;
+        width: 40%;
+        padding: 0.6em 1em;
+        font-size: 1em;
+        margin: 0.5em auto 0;
+        display: block;
+        transition: 0.5s all;
+        -webkit-transition: 0.5s all;
+        -moz-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+        -o-transition: 0.5s all;
+    }
+</style>
+{% endblock %}

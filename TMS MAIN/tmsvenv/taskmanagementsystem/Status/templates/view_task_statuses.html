@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+
+<div id="page-wrapper">
+    <div style="margin-left: 200px;">
+        <button><a href="/view_team_members/{{a.id}}">View Team Members</a></button>
+        <button><a href="/add_task/{{a.id}}">Add Task</a></button>
+        <button><a href="/view_project_task/{{a.id}}">View Tasks</a></button>
+        <button><a href="/view_project_task_performance/{{a.id}}">View Task Chart</a></button>
+        <button><a href="/view_task_statuses/{{a.id}}">View Status</a></button>
+        <button><a href="/view_report/{{a.id}}">View Report</a></button>
+        <button><a href="/view_project">View Projects</a></button>
+    </div><br><br>
+    <div class="main-page">
+        <div class="panel-body search" style="display: flex; justify-content: space-between;">
+            <div class="filter-box" >
+                <form action="" method="GET" id="filter-form">
+                    <label for="filter">Filter by:</label>
+                    <select name="filter" id="filter" style="height: 30px;">
+                        <option value="">All</option>
+                        <option value="to-do">To-Do</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button type="submit">
+                        <i class="fa fa-filter"></i>
+                    </button>
+                </form>
+            </div>
+            <div>
+            <form action="" method="GET" style="margin-top: 7px;">
+                <input type="text" name="search" placeholder="Search">
+                <button type="submit" href="/">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div>
+        </div>
+        <div class="panel-body widget-shadow">
+            <h4>Designation View:</h4>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Task</th>
+                      <th>Staff</th>
+                      <th>Start Date</th>
+                      <th>Due Date</th>
+                      <th>Status</th>
+                      <th>Message</th>
+                      <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if request.session.ut == 1%}
+                    {% for i in b %}
+                    <tr>
+                      <td>{{i.project}}</td>
+                      <td>{{i.title}}</td>
+                      <td>{{i.staff}}</td>
+                      <td>{{i.start_date}}</td>
+                      <td>{{i.due_date}}</td>
+                      {%if i.statuses == None %}
+                      <th>Not Updated</th>
+                      {% else %}
+                      <td>{{i.statuses}}</td>
+                      {% endif %}
+                      {%if i.messages == None %}
+                      <th>Not Updated</th>
+                      {% else %}
+                      <td>{{i.messages}}</td>
+                      {% endif %}
+                      {%if i.comments == None %}
+                      <th>Not Updated</th>
+                      {%else%}
+                      <td>{{i.comments}}</td>
+                      {%endif%}
+                    </tr>
+                    {%endfor%}
+                    {% else %}
+                    {% for i in d%}
+                    <tr>
+                        <td>{{i.project}}</td>
+                        <td>{{i.title}}</td>
+                        <td>{{i.staff}}</td>
+                        <td>{{i.start_date}}</td>
+                        <td>{{i.due_date}}</td>
+                        {%if i.statuses == None %}
+                        <th>Not Updated</th>
+                        {% else %}
+                        <td>{{i.statuses}}</td>
+                        {% endif %}
+                        {%if i.messages == None %}
+                        <th>Not Updated</th>
+                        {% else %}
+                        <td>{{i.messages}}</td>
+                        {% endif %}
+                    </tr>
+                    {%endfor%}
+                    {%endif%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

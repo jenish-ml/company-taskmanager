@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="panel-body search" style="display: flex; justify-content: space-between;">
+            <div class="filter-box" >
+                <form action="" method="GET" id="filter-form">
+                    <label for="filter">Filter by:</label>
+                    <select name="filter" id="filter" style="height: 30px;">
+                        <option value="">All</option>
+                        <option value="to-do">To-Do</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button type="submit">
+                        <i class="fa fa-filter"></i>
+                    </button>
+                </form>
+            </div>
+            <div>
+            <form action="" method="GET" style="margin-top: 7px;">
+                <input type="text" name="search" placeholder="Search">
+                <button type="submit" href="/">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div>
+        </div>
+        <div class="panel-body widget-shadow">
+            <h4>Status View:</h4>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Project</th>
+                      <th>Task</th>
+                      <th>Status</th>
+                      <th>Message</th>
+                      <th>Staff</th>
+                      <th>Files</th>
+                      <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in a%}
+                    <tr>
+                      <td>{{i.current_date}}</td>
+                      <td>{{i.project}}</td>
+                      <td>{{i.task.title}}</td>
+                      <td>{{i.current_status}}</td>
+                      <td>{{i.message}}</td>
+                      <td>{{i.userid}}</td>
+                      
+                      <td><ul>
+                        {% for file in i.file.all %}
+                            <li><a href="{{ file.file.url }}">{{ file.file }}</a></li>
+                        {% endfor %}
+                    </ul><br></td>
+                      <td><a href="/edit_status/{{i.id}}">Edit</a>/<a href="/delete_status/{{i.id}}" onclick="return confirm('Are you sure you want to delete ?')">Delete</a></td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#filter").change(function(){
+            $("#filter-form").submit();
+        })
+    })
+</script>
+{%endblock%}

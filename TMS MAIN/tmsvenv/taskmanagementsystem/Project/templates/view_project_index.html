@@ -1,0 +1,238 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div id="page-wrapper">
+    <div class="main-page">
+        <div style="margin-left: 50px;">
+            <button><a href="/add_task/{{c.id}}">Add Task</a></button>
+        </div><br>
+        <div class="card w-75">
+            {% for i in a %}
+                <div class="col-md-8 panel-grids">
+                    <div class="panel panel-primary" style="position: relative;">
+                        <div class="panel-heading">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="row">
+                                    <h3 class="panel-title">{{i.title}}</h3>
+                                    {% if request.session.ut != 3 %}
+                                        <div style="position: absolute; top: 10px; right: 10px;">
+                                            <button class="btn btn-sm"><a href="/edit_project/{{i.id}}">Edit</a></button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <label for="">Created by :</label>
+                            {{i.created_by}} <br>
+                            <label for="">Created In :</label>
+                            {{i.current_date}} <br>
+                            <label for="">Description :</label>
+                            {{i.description}} <br>
+                            <label for="">Start Date :</label>
+                            {{i.start_date}} <br>
+                            <label for="">Due Date :</label>
+                            {{i.due_date}} <br>
+                            <label for="">Related Files : </label>
+                            {% for file in i.file.all %}
+                                <li><a href="{{ file.file.url }}">{{ file.file }}</a></li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card w-25">
+            {% for i in d %}
+                <div class="col-md-3 panel-grids">
+                    <div class="panel panel-primary" style="position: relative;"> 
+                        <div class="panel-heading">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="panel-title">{{i.team_name}}</h3>
+                                {% if request.session.ut != 3 %}
+                                    <div style="position: absolute; top: 10px; right: 10px;">
+                                        <button class="btn btn-sm"><a href="/project_team_edit/{{i.id}}">Edit</a></button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="panel-body" id="team-members-list">
+                            {% for member in i.team_members.all %}
+                                <li>{{ member.name }}</li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card w-100" style="position: relative;">
+            {% for i in a %}
+                <div class="col-md-12 panel-grids">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="panel-title">Task</h3>
+                                <div class="filter-boxes" style="display: flex; align-items: center; position: absolute; top: 10px; right: 30px;">
+                                    <div style="margin-right: 10px;">
+                                        <form action="" method="GET" id="task-filter-form">
+                                            <select name="task-filter" id="task-filter">
+                                                <option value="" selected>Filter Choosen by ....</option>
+                                                <option value="Priority">Priority</option>
+                                                <option value="Status">Status</option>
+                                                <option value="category">Category</option>
+                                                <option value="Staff">Staff</option>
+                                            </select>
+                                        </form>
+                                    </div>
+                                    <div>
+                                        <form action="" method="GET" id="priority-filter-form" style="display: none;">
+                                            <select name="priority-filter" id="priority-filter">
+                                                <option value="" selected>Select Priority</option>
+                                                <option value="low">Low</option>
+                                                <option value="high">High</option>
+                                                <option value="medium">Medium</option>
+                                            </select>
+                                        </form>
+                                        <form action="" method="GET" id="category-filter-form" style="display: none;">
+                                            <select name="category-filter" id="category-filter">
+                                                <option value="" selected>Select Category</option>
+                                                <option value="task">Task</option>
+                                                <option value="bug">Bug</option>
+                                                <option value="defect">Defect</option>
+                                            </select>
+                                        </form>
+                                        <form action="" method="GET" id="status-filter-form" style="display: none;">
+                                            <select name="status-filter" id="status-filter">
+                                                <option value="" selected>Select Status</option>
+                                                <option value="New">New</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Completed">Completed</option>
+                                                <option value="Resolved">Resolved</option>
+                                                <option value="Reopen">Reopen</option>
+                                            </select>
+                                        </form>
+                                        <form action="" method="GET" id="staff-filter-form" style="display: none;">
+                                            <select name="staff-filter" id="staff-filter">
+                                                <option value="" selected>Select Staff</option>
+                                                {% for staff in staff_member %}
+                                                    <option value="{{ staff }}">{{ staff }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </form>
+                                        <input type="button" value="Back" id="backButton" style="color: black;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Task </th>
+                                        <th>Start Date</th>
+                                        <th>Due Date</th>
+                                        <th>Assigned To</th>
+                                        <th>Status</th>
+                                        <th>Parent Task</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if request.session.ut != 3 %}
+                                        {% for i in b %}
+                                            <tr>
+                                                <td>#{{i.id}}.<a href="/view_task/{{i.id}}">{{ i.title }}</a></td>
+                                                <td>{{ i.start_date }}</td>
+                                                <td>{{ i.due_date }}</td>
+                                                <td>{{ i.staff }}</td>
+                                                {% if i.status == None %}
+                                                    <th>Not Updated</th>
+                                                {% else %}
+                                                    <td>{{ i.status }}</td>
+                                                {% endif %}
+                                                {% if i.parent_task != Null %}
+                                                <td>#{{i.parent_task_id}}.<a href="/view_task/{{i.id}}">{{ i.parent_task.title }}</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for i in f %}
+                                            <tr>
+                                                <td>{{i.id}}.<a href="/view_task/{{i.id}}">{{ i.title }}</a></td>
+                                                <td>{{ i.start_date }}</td>
+                                                <td>{{ i.due_date }}</td>
+                                                <td>{{ i.staff }}</td>
+                                                {% if i.status == None %}
+                                                    <th>Not Updated</th>
+                                                {% else %}
+                                                    <td>{{ i.status }}</td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div><br>
+<script>
+$(document).ready(function(){
+    $("#task-filter, #status-filter, #priority-filter, #category-filter, #staff-filter").select2();
+
+    $('#backButton').click(function() {
+        $('#task-filter, #status-filter, #priority-filter, #category-filter, #staff-filter').val('').trigger('change');
+        return false;
+    });
+    
+    $('#task-filter').change(function() {
+        
+        if ($(this).val() === 'Staff') {
+            $('#staff-filter-form').show();
+            $('#status-filter-form').hide();
+            $('#category-filter-form').hide();
+            $('#priority-filter-form').hide();
+            return false;
+        }
+        if ($(this).val() === 'Priority') {
+            $('#priority-filter-form').show();
+            $('#staff-filter-form').hide();
+            $('#category-filter-form').hide();
+            return false;
+        }
+        if ($(this).val() === 'category') {
+            $('#category-filter-form').show();
+            $('#status-filter-form').hide();
+            $('#staff-filter-form').hide();
+            $('#priority-filter-form').hide();
+            return false;
+        }
+        if ($(this).val() === 'Status') {
+            $('#status-filter-form').show();
+            $('#staff-filter-form').hide();
+            $('#category-filter-form').hide();
+            $('#priority-filter-form').hide();
+            return false;
+        }
+        else {
+            $('#status-filter-form').hide();
+            $('#staff-filter-form').hide();
+            $('#category-filter-form').hide();
+            $('#priority-filter-form').hide();
+            return false;
+        }
+    });
+    $('#status-filter, #priority-filter, #category-filter, #staff-filter').change(function() {
+        var visibleForm = $('#task-filter-form, #status-filter-form, #priority-filter-form, #category-filter-form, #staff-filter-form').filter(':visible');
+        visibleForm.submit();
+    });
+});
+
+</script>
+
+{% endblock %}

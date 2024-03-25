@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{%block content%}  
+{% load static %}
+<div id="page-wrapper">
+    <div style="margin-left: 200px;">
+        <button><a href="/view_team_members/{{b.id}}">View Team Members</a></button>
+        <button><a href="/add_task/{{b.id}}">Add Task</a></button>
+        <button><a href="/view_project_task/{{b.id}}">View Tasks</a></button>
+        <button><a href="/view_project_task_performance/{{b.id}}">View Task Chart</a></button>
+        <button><a href="/view_task_statuses/{{b.id}}">View Status</a></button>
+        <button><a href="/view_report/{{b.id}}">View Report</a></button>
+        <button><a href="/view_project">View Projects</a></button>
+    </div><br><br>
+    <div class="main-page">
+        <div class="panel-body search" style="display: flex;justify-content: flex-end; ">
+            <form action="" method="GET">
+                <input type="text" name="search" placeholder="search">
+                <button type="submit" href="/">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div><br>
+        <div class="panel-body widget-shadow">
+            <h4>Team View:</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Team Members</th>
+                      <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in a %}
+                    <tr>
+                      <td>{{i.team.team_name}}</td>
+                      <td><ul>
+                        {% for member in i.team_members.all %}
+                            <li>{{ member.name }}</li>
+                        {% endfor %}
+                    </ul></td>
+                    <td><a href="/edit_team_members/{{i.id}}">Edit</a>/<a href="/delete_team_members/{{i.id}}" onclick="return confirm('Are you sure you want to delete {{ i.team.team_name }}?')">Delete</a></td>
+                  
+                </tr>
+                    {%endfor%}
+                  
+                   
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%endblock%}
