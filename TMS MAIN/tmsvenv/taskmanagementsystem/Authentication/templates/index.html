@@ -6,14 +6,16 @@
     alert("Login Credentials Invalid")
 </script>
 {%endif%}
-
+<div id="page-wrapper">
 {% if user.is_authenticated %}
     <strong>Welcome</strong>
 {% else %}
-<strong>
-    please login as admin,,,
-</strong>
+<pre>
+    <strong>
+        please login as admin.....username-admin,password-admin
+    </strong>
+</pre>
 {% endif %}
-    
 
+</div>
 {%endblock%}
